@@ -1,7 +1,7 @@
 import styles from './App.module.css'
 import Analytics from './components/Analytics/Analytics'
 import Form from './components/Form/Form'
-import List from './components/CardList/CardList'
+import TransactionList from './components/TransactionList/TransactionList'
 
 function App() {
   return (
@@ -15,8 +15,8 @@ function App() {
           <Form/>
         </section>
         <section className={styles.info}>
-          <Analytics />
-          <List />
+          <Analytics/>
+          <TransactionList/>
         </section>
       </main>
     </div>
