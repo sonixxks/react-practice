@@ -1,0 +1,63 @@
+.container {
+    margin-bottom: 30px;
+}
+
+.container h2 {
+    font-size: 20px;
+    margin-bottom: 15px;
+    color: #C53771;
+}
+
+.grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 15px;
+}
+
+.card {
+    display: flex;
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 15px;
+    background-color: #fff;
+}
+
+.title {
+    font-size: 14px;
+    color: #F282B0;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.totalTitle {
+    font-size: 14px;
+    color: #C53771;
+    margin-bottom: 6px;
+    font-weight: 600;
+}
+
+.info {
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.totalInfo {
+    font-size: 16px;
+    font-weight: 700; 
+}
+
+.positiveCard { 
+    color: #2e7d32;
+    border: 1px solid #C53771;
+}
+
+.negativeCard { 
+    color: #d84315;
+    border: 1px solid #C53771;
+}
+
+@media (max-width: 768px) {
+    .grid {
+        grid-template-columns: 1fr;
+    }
+}
