@@ -10,6 +10,7 @@ interface Transaction {
 }
 
 export default function TransactionTable() {
+
     const testData: Transaction[] = [
         {id: 1, title: 'Продукты на ужин', category: 'Продукты', amount: '-500 руб', type: 'expense', date: '29.06.2026'},
         {id: 2, title: 'Стипендия в мае', category: 'Стипендия', amount: '+19865 руб', type: 'income', date: '25.05.2026'}

@@ -1,7 +1,8 @@
 import styles from './App.module.css'
-import Analytics from './components/Analytics/Analytics'
-import TransactionForm from './components/TransactionForm/TransactionForm'
-import TransactionTable from './components/TransactionTable/TransactionTable'
+import Analytics from './Components/Widgets/Analytics/Analytics'
+import MonthSelector from './Components/Widgets/MonthSelector/MonthSelector'
+import TransactionForm from './Components/Widgets/TransactionForm/TransactionForm'
+import TransactionTable from './Components/Widgets/TransactionTable/TransactionTable'
 
 function App() {
   return (
@@ -15,6 +16,7 @@ function App() {
           <TransactionForm/>
         </section>
         <section className={styles.info}>
+          <MonthSelector />
           <Analytics/>
           <TransactionTable/>
         </section>

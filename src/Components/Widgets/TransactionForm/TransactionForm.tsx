@@ -5,12 +5,16 @@ import Select from "../../UI/Select/Select";
 import styles from './TransactionForm.module.css';
 
 export default function TransactionForm() {
-const categories = ['Транспорт', 'Продукты', 'Стипендия', 'Бытовые услуги', 'ЖКХ, связь и интернет', 'Развлечения', 'Кафе, рестораны и фастфуд', 'Маркетплейсы', 'Медецинские услуги и аптека', 'На инвестиции', 'Образование', 'Одежда и обувь', 'Парфюмерия и косметика', 'Переводы людям', 'Питомцы', 'Подписки', 'Путешествия', 'Салоны красоты', 'Прочее']
+    const categories = ['Транспорт', 'Продукты', 'Стипендия', 'Бытовые услуги', 'ЖКХ, связь и интернет', 'Развлечения', 'Кафе, рестораны и фастфуд', 'Маркетплейсы', 'Медецинские услуги и аптека', 'На инвестиции', 'Образование', 'Одежда и обувь', 'Парфюмерия и косметика', 'Переводы людям', 'Питомцы', 'Подписки', 'Путешествия', 'Салоны красоты', 'Прочее']
+    const typeOptions = [
+        { value: 'income', label: 'Доход' },
+        { value: 'expense', label: 'Расход' }
+    ];
 
     return (
         <form className={styles.container}>
             <h2>Новая транзакция</h2>
-            <Radio selectedValue="expense"/>
+            <Radio name="transactionType" options={typeOptions} selectedValue="expense"/> 
             <Input label="Дата" type="date" value="" placeholder=""/>
             <Select label="Категория" value="" placeholder="Выберите категорию" options={categories}/>
             <Input label="Название / описание" type="text" placeholder="Например, маникюр" value=""/>
