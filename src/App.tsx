@@ -1,7 +1,7 @@
 import styles from './App.module.css'
 import Analytics from './components/Analytics/Analytics'
-import Form from './components/Form/Form'
-import TransactionList from './components/TransactionList/TransactionList'
+import TransactionForm from './components/TransactionForm/TransactionForm'
+import TransactionTable from './components/TransactionTable/TransactionTable'
 
 function App() {
   return (
@@ -12,11 +12,11 @@ function App() {
 
       <main className={styles.main}>
         <section className={styles.form}>
-          <Form/>
+          <TransactionForm/>
         </section>
         <section className={styles.info}>
           <Analytics/>
-          <TransactionList/>
+          <TransactionTable/>
         </section>
       </main>
     </div>

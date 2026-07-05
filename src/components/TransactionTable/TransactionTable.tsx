@@ -1,4 +1,4 @@
-import styles from './TransactionList.module.css';
+import styles from './TransactionTable.module.css';
 
 interface Transaction {
     id: number;
@@ -9,7 +9,7 @@ interface Transaction {
     date: string;
 }
 
-export default function TransactionList() {
+export default function TransactionTable() {
     const testData: Transaction[] = [
         {id: 1, title: 'Продукты на ужин', category: 'Продукты', amount: '-500 руб', type: 'expense', date: '29.06.2026'},
         {id: 2, title: 'Стипендия в мае', category: 'Стипендия', amount: '+19865 руб', type: 'income', date: '25.05.2026'}
