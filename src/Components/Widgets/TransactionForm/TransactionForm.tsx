@@ -2,7 +2,7 @@ import Button from "../../UI/Button/Button";
 import Input from "../../UI/Input/Input";
 import Radio from "../../UI/Radio/Radio";
 import Select from "../../UI/Select/Select";
-import styles from './TransactionForm.module.css';
+import styles from './TransactionForm.module.scss';
 
 export default function TransactionForm() {
     const categories = ['Транспорт', 'Продукты', 'Стипендия', 'Бытовые услуги', 'ЖКХ, связь и интернет', 'Развлечения', 'Кафе, рестораны и фастфуд', 'Маркетплейсы', 'Медецинские услуги и аптека', 'На инвестиции', 'Образование', 'Одежда и обувь', 'Парфюмерия и косметика', 'Переводы людям', 'Питомцы', 'Подписки', 'Путешествия', 'Салоны красоты', 'Прочее']

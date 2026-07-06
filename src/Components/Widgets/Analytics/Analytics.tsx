@@ -1,4 +1,4 @@
-import styles from './Analytics.module.css';
+import styles from './Analytics.module.scss';
 
 export default function Analytics() {
     const income = 15000;

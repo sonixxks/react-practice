@@ -1,5 +1,5 @@
 import Radio from '../../UI/Radio/Radio';
-import styles from './MonthSelector.module.css';
+import styles from './MonthSelector.module.scss';
 
 export default function MonthSelector() {
     const months = [

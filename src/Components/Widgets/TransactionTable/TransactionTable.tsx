@@ -1,4 +1,4 @@
-import styles from './TransactionTable.module.css';
+import styles from './TransactionTable.module.scss';
 
 interface Transaction {
     id: number;

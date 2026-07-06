@@ -1,4 +1,4 @@
-import styles from './Radio.module.css';
+import styles from './Radio.module.scss';
 
 interface RadioOption {
     value: string;

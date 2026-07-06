@@ -9,3 +9,11 @@ body {
     background-color: #FCF5EB;
     color: #000;
 }
+
+button, input, select {
+    font-family: 'Montserrat', sans-serif !important;
+}
+
+a {
+    text-decoration: none;
+}
