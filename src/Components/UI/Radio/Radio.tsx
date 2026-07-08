@@ -8,15 +8,23 @@ interface RadioOption {
 interface RadioProps {
     name: string;
     options: RadioOption[];
-    selectedValue?: string | number;
+    selectedValue: string;
+    onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
 }
 
-export default function Radio({ name, options, selectedValue }: RadioProps) {
+export default function Radio(props: RadioProps) {
     return (
         <div className={styles.container}>
-            {options.map((option) => (
+            {props.options.map((option) => (
                 <label className={styles.label} key={option.value}>
-                    <input type="radio" name={name} value={option.value} className={styles.input} checked={selectedValue===option.value}/>
+                    <input 
+                        type="radio" 
+                        name={props.name} 
+                        value={option.value} 
+                        className={styles.input} 
+                        checked={props.selectedValue === option.value}
+                        onChange={props.onChange}
+                    />
                     <span className={styles.typeButton}>{option.label}</span>
                 </label>
             ))}

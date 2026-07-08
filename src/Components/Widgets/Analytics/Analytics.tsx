@@ -1,19 +1,19 @@
 import styles from './Analytics.module.scss';
 
-export default function Analytics() {
-    const income = 15000;
-    const expense = 4500;
-    const difference = income - expense;
-    const isPositive = difference >= 0;
+interface AnalyticsProps {
+    income: number;
+    expense: number;
+    balance: number;
+}
 
-    // Форматирование чисел
-    const totalIncome = income.toLocaleString('ru-RU');
-    const totalExpense = expense.toLocaleString('ru-RU');
-    const formattedDiff = Math.abs(difference).toLocaleString('ru-RU');
+export default function Analytics(props: AnalyticsProps) {
+    const isPositive = props.balance >= 0;
+    const totalIncome = props.income.toLocaleString('ru-RU');
+    const totalExpense = props.expense.toLocaleString('ru-RU');
+    const formattedDiff = Math.abs(props.balance).toLocaleString('ru-RU');
 
     return (
         <div className={styles.container}>
-            <h2>Статистика</h2>
             <div className={styles.grid}>
                 <div className={styles.card}>
                     <span className={styles.title}>Всего доходов:</span>
@@ -31,5 +31,5 @@ export default function Analytics() {
                 </div>
             </div>
         </div>
-    )
+    );
 }

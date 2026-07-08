@@ -1,3 +1,5 @@
+import { useNavigate } from 'react-router-dom';
+import { useAuth } from '../../../Context/AuthContext';
 import Button from '../../UI/Button/Button';
 import Card from '../../UI/Card/Card';
 import styles from './Home.module.scss';
@@ -5,13 +7,25 @@ import analyticsImg from '../../../assets/analytics.jpg'
 import expensesImg from '../../../assets/expenses.jpg'
 import moneyImg from '../../../assets/money.jpg'
 
+
 export default function Home() {
+    const { isLogged } = useAuth();
+    const navigate = useNavigate();
+
+    const handleTrackerClick = () => {
+        if (isLogged) {
+            navigate('/dashboard');
+        } else {
+            navigate('/auth');
+        }
+    };
+
     return (
         <div className={styles.container}>
             <section className={styles.hero}>
-                <h2>Твой финансовый помощник</h2>
+                <h2>Финансовый помощник</h2>
                 <p>Контролируйте свои доходы и расходы, анализируйте бюджет по месяцам и оставайтесь в плюсе!</p>
-                <Button type="button" text="Перейти в финансовый трекер"/>
+                <Button type="button" text="Перейти в финансовый трекер" onClick={handleTrackerClick} />
             </section>
 
             <section className={styles.info}>
@@ -33,5 +47,5 @@ export default function Home() {
                 <Card image={moneyImg} alt="Превью денег" />
             </section>
         </div>
-    )
+    );
 }

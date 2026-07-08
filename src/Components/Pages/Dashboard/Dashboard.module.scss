@@ -4,15 +4,17 @@
     padding: 40px 20px;
 }
 
-.header {
-    margin-bottom: 40px;
-    text-transform: uppercase;
+.container h1 {
+    font-size: 32px;
+    margin-bottom: 30px;
+    color: #C53771;
+    text-align: center;
 }
 
-.header h1 {
-    color: #C53771;
-    font-size: 28px;
-    text-align: center;
+.exit {
+    display: flex;
+    margin-bottom: 20px;
+    width: max-content;
 }
 
 .main {
