@@ -18,22 +18,20 @@
     color: #C53771;
 }
 
-// Твоя трехколоночная сетка для карточек трат
 .grid {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 15px;
-    margin-bottom: 40px; // Отступ перед списком категорий
+    margin-bottom: 40px;
 }
 
-// Базовый стиль карточки
 .card {
     display: flex;
     flex-direction: column;
     padding: 20px;
     border-radius: 15px;
     background-color: #fff;
-    border: 1px solid #f0f0f0; // Легкая рамочка для дефолтных карточек
+    border: 1px solid #f0f0f0;
 }
 
 .title {
@@ -53,7 +51,7 @@
 .info {
     font-size: 16px;
     font-weight: 500;
-    color: #333; // Сделаем текст обычных сумм читаемым
+    color: #333;
 }
 
 .totalInfo {
@@ -61,7 +59,6 @@
     font-weight: 700; 
 }
 
-// Твои умные классы для окрашивания баланса
 .positiveCard { 
     color: #2e7d32;
     border: 1px solid #C53771;
@@ -71,8 +68,6 @@
     color: #d84315;
     border: 1px solid #C53771;
 }
-
-// --- Стилизация рейтинга категорий в том же стиле ---
 
 .categoriesSection {
     background-color: #fff;
@@ -92,12 +87,12 @@
     justify-content: space-between;
     align-items: center;
     padding: 12px 16px;
-    background-color: #fff5f8; // Нежно-розовая подложка для строк
+    background-color: #fff5f8;
     border-radius: 10px;
     transition: background-color 0.2s ease;
 
     &:hover {
-        background-color: #ffe6ef; // Чуть темнее при наведении
+        background-color: #ffe6ef;
     }
 }
 
@@ -105,17 +100,17 @@
     display: flex;
     gap: 10px;
     align-items: center;
+}
 
-    .place {
-        font-weight: 700;
-        color: #C53771; // Места в топе выделим главным цветом
-        width: 20px;
-    }
+.categoryInfo .place {
+    font-weight: 700;
+    color: #C53771;
+    width: 20px;
+}
 
-    .name {
-        font-weight: 500;
-        color: #333;
-    }
+.categoryInfo .name {
+    font-weight: 500;
+    color: #333;
 }
 
 .amount {
@@ -129,7 +124,6 @@
     padding: 20px 0;
 }
 
-// Твой медиа-запрос для адаптивности под телефоны
 @media (max-width: 768px) {
     .grid {
         grid-template-columns: 1fr;
@@ -143,14 +137,6 @@
     border: 1px solid #f0f0f0;
     margin-bottom: 30px;
 }
-
-.chartSection h3 {
-    font-size: 16px;
-    color: #C53771;
-    margin-bottom: 20px;
-    font-weight: 600;
-}
-
 
 .chartContainer {
     position: relative;

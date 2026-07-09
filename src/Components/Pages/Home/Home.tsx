@@ -3,10 +3,9 @@ import { useAuth } from '../../../Context/AuthContext';
 import Button from '../../UI/Button/Button';
 import Card from '../../UI/Card/Card';
 import styles from './Home.module.scss';
-import analyticsImg from '../../../assets/analytics.jpg'
-import expensesImg from '../../../assets/expenses.jpg'
-import moneyImg from '../../../assets/money.jpg'
-
+import analyticsImg from '../../../Assets/analytics.jpeg';
+import expensesImg from '../../../Assets/expenses.jpeg';
+import moneyImg from '../../../Assets/money.jpeg';
 
 export default function Home() {
     const { isLogged } = useAuth();

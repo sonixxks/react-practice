@@ -17,25 +17,25 @@ interface TransactionFormProps {
     onAdd: (data: TransactionData) => void;
 }
 
+const typeOptions = [
+    { value: 'income', label: 'Доход' },
+    { value: 'expense', label: 'Расход' }
+];
+
+const expenseCategories = [
+    'Транспорт', 'Продукты', 'Бытовые услуги', 'ЖКХ, связь и интернет', 
+    'Развлечения', 'Кафе, рестораны и фастфуд', 'Маркетплейсы', 
+    'Медицинские услуги и аптека', 'На инвестиции', 'Образование', 
+    'Одежда и обувь', 'Парфюмерия и косметика', 'Переводы людям', 
+    'Питомцы', 'Подписки', 'Путешествия', 'Салоны красоты', 'Прочее'
+];
+
+const incomeCategories = [
+    'Стипендия', 'Зарплата', 'Подработка', 
+    'Подарок', 'Кэшбэк', 'Инвестиции', 'Прочее'
+];
+
 export default function TransactionForm({ onAdd }: TransactionFormProps) {
-    const typeOptions = [
-        { value: 'income', label: 'Доход' },
-        { value: 'expense', label: 'Расход' }
-    ];
-    
-    const expenseCategories = [
-        'Транспорт', 'Продукты', 'Бытовые услуги', 'ЖКХ, связь и интернет', 
-        'Развлечения', 'Кафе, рестораны и фастфуд', 'Маркетплейсы', 
-        'Медицинские услуги и аптека', 'На инвестиции', 'Образование', 
-        'Одежда и обувь', 'Парфюмерия и косметика', 'Переводы людям', 
-        'Питомцы', 'Подписки', 'Путешествия', 'Салоны красоты', 'Прочее'
-    ];
-
-    const incomeCategories = [
-        'Стипендия', 'Зарплата', 'Подработка', 
-        'Подарок', 'Кэшбэк', 'Инвестиции', 'Прочее'
-    ];
-
     const [type, setType] = useState<'income' | 'expense'>('expense');
     const [date, setDate] = useState('');
     const [category, setCategory] = useState('');
@@ -43,7 +43,6 @@ export default function TransactionForm({ onAdd }: TransactionFormProps) {
     const [amount, setAmount] = useState('');
 
     const currentCategories = type === 'income' ? incomeCategories : expenseCategories;
-    const selectOptions = currentCategories.map(cat => ({ value: cat, label: cat }));
 
     const handleTypeChange = (newType: 'income' | 'expense') => {
         setType(newType);
@@ -57,7 +56,6 @@ export default function TransactionForm({ onAdd }: TransactionFormProps) {
         setCategory('');
         setTitle('');
         setAmount('');
-        setType('expense');
     };
 
     return (
@@ -80,7 +78,7 @@ export default function TransactionForm({ onAdd }: TransactionFormProps) {
             
             <Select 
                 label="Категория" 
-                options={selectOptions}
+                options={currentCategories.map(category => ({ value: category, label: category }))}
                 value={category}
                 onChange={(e) => setCategory(e.target.value)}
             />

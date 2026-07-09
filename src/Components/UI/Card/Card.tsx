@@ -7,7 +7,7 @@ interface CardProps {
     alt?: string;
 }
 
-export default function Card({ title, description, image, alt='' }: CardProps) {
+export default function Card({ title, description, image, alt = '' }: CardProps) {
     if (image) {
         return (
             <div className={`${styles.card} ${styles.cardImage}`}>

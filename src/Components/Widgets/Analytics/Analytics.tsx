@@ -6,11 +6,11 @@ interface AnalyticsProps {
     balance: number;
 }
 
-export default function Analytics(props: AnalyticsProps) {
-    const isPositive = props.balance >= 0;
-    const totalIncome = props.income.toLocaleString('ru-RU');
-    const totalExpense = props.expense.toLocaleString('ru-RU');
-    const formattedDiff = Math.abs(props.balance).toLocaleString('ru-RU');
+export default function Analytics({ income, expense, balance }: AnalyticsProps) {
+    const isPositive = balance >= 0;
+    const totalIncome = income.toLocaleString('ru-RU');
+    const totalExpense = expense.toLocaleString('ru-RU');
+    const formattedDiff = Math.abs(balance).toLocaleString('ru-RU');
 
     return (
         <div className={styles.container}>

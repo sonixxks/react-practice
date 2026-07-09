@@ -19,13 +19,11 @@ interface Transaction {
 const months = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
 
 export default function Dashboard() {
-    // 2. Получаем имя пользователя и метод выхода из стейт-менеджера
     const { username, logout } = useAuth(); 
     
     const currentMonth = months[new Date().getMonth()];
     const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth);
 
-    // 3. Динамический ключ: у каждого пользователя теперь своя личная коробочка с данными
     const userStorageKey = `wallet_transactions_${username || 'guest'}`;
 
     const [transactions, setTransactions] = useState<Transaction[]>(() => {
@@ -33,7 +31,6 @@ export default function Dashboard() {
         return saved ? JSON.parse(saved) : [];
     });
 
-    // 4. Перезаписываем localStorage только для текущего юзера при изменении массива
     useEffect(() => {
         localStorage.setItem(userStorageKey, JSON.stringify(transactions));
     }, [transactions, userStorageKey]);
@@ -98,7 +95,7 @@ export default function Dashboard() {
             </div>
 
             <div className={styles.exit}>
-              <Button text="Выйти из аккаунта" onClick={logout} />
+                <Button text="Выйти из аккаунта" onClick={logout} />
             </div>
         </div>
     );

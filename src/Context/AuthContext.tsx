@@ -1,4 +1,5 @@
 import { createContext, useContext, useState, type ReactNode } from 'react';
+import { Navigate } from 'react-router-dom';
 
 interface AuthContextType {
     isLogged: boolean;
@@ -11,7 +12,6 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
-    // 1. При обновлении страницы строго проверяем твой реальный ключ из localStorage
     const [isLogged, setIsLogged] = useState<boolean>(() => 
         localStorage.getItem('isLogged') === 'true'
     );
@@ -22,14 +22,12 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     const role: 'user' | 'guest' = isLogged ? 'user' : 'guest';
 
-    // 2. Функция теперь принимает ТО ИМЯ, которое ввели при регистрации/входе
     const login = (name: string) => {
         setIsLogged(true);
         setUsername(name);
         
         localStorage.setItem('isLogged', 'true');
         localStorage.setItem('username', name);
-        // До кучи пишем фейковый токен для проверки преподом, если он захочет взглянуть в консоль
         localStorage.setItem('auth_token', `mock-token-${name}-${Date.now()}`);
     };
 
@@ -53,3 +51,14 @@ export const useAuth = () => {
     if (!context) throw new Error('useAuth must be used within AuthProvider');
     return context;
 };
+
+// Защита приватных страниц
+export function ProtectedRoute({ children }: { children: ReactNode }) {
+    const { isLogged } = useAuth();
+
+    if (!isLogged) {
+        return <Navigate to="/auth" replace />;
+    }
+
+    return <>{children}</>;
+}

@@ -27,13 +27,13 @@
 }
 
 .label:hover .typeButton {
-  border-color: #F282B0;
-  color: #F282B0;
+    border-color: #F282B0;
+    color: #F282B0;
 }
 
 .input:checked + .typeButton {
-  background-color: #F282B0;
-  color: #fff;
-  border-color: #F282B0;
-  font-weight: 500;
+    background-color: #F282B0;
+    color: #fff;
+    border-color: #F282B0;
+    font-weight: 500;
 }

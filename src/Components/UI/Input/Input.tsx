@@ -11,19 +11,19 @@ interface InputProps {
     ref?: any;
 }
 
-export default function Input(props: InputProps) {
+export default function Input({ label, type, placeholder, value, name, onChange, onBlur, ref }: InputProps) {
     return (
         <div className={styles.container}>
-            <label className={styles.label}>{props.label}</label>
+            <label className={styles.label}>{label}</label>
             <input 
-                type={props.type} 
-                placeholder={props.placeholder} 
+                type={type} 
+                placeholder={placeholder} 
                 className={styles.input}
-                name={props.name}
-                onChange={props.onChange}
-                onBlur={props.onBlur}
-                ref={props.ref}
-                value={props.value !== undefined ? props.value : undefined} 
+                name={name}
+                onChange={onChange}
+                onBlur={onBlur}
+                ref={ref}
+                value={value} 
             />
         </div>
     );

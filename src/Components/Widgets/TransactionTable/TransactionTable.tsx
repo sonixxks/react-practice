@@ -13,7 +13,7 @@ interface TransactionTableProps {
     items: Transaction[];
 }
 
-export default function TransactionTable(props: TransactionTableProps) {
+export default function TransactionTable({ items }: TransactionTableProps) {
     return (
         <div className={styles.container}>
             <h2>История транзакций</h2>
@@ -28,7 +28,7 @@ export default function TransactionTable(props: TransactionTableProps) {
                         </tr>
                     </thead>
                     <tbody>
-                        {props.items.map((item) => (
+                        {items.map((item) => (
                             <tr key={item.id} className={styles.row}>
                                 <td className={styles.cell}>{item.title}</td>
                                 <td className={styles.cell}>
@@ -36,7 +36,7 @@ export default function TransactionTable(props: TransactionTableProps) {
                                 </td>
                                 <td className={styles.cell}>{item.date}</td>
                                 <td className={`${styles.cell} ${styles.amount} ${item.type === 'income' ? styles.income : styles.expense}`}>
-                                    {item.type === 'income' ? `+ ${item.amount.toLocaleString('ru-RU')}` : `- ${item.amount.toLocaleString('ru-RU')}`} руб
+                                    {item.type === 'income' ? '+' : '-'} {item.amount.toLocaleString('ru-RU')} руб
                                 </td>
                             </tr>
                         ))}

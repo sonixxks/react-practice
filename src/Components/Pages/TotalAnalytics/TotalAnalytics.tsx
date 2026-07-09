@@ -1,28 +1,10 @@
 import { useState, useEffect } from 'react';
 import styles from './TotalAnalytics.module.scss';
-
-// Импортируем компоненты Chart.js
-import {
-    Chart as ChartJS,
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend
-} from 'chart.js';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar } from 'react-chartjs-2';
 import { useAuth } from '../../../Context/AuthContext';
 
-// Регистрируем модули в Chart.js (обязательный шаг для работы)
-ChartJS.register(
-    CategoryScale,
-    LinearScale,
-    BarElement,
-    Title,
-    Tooltip,
-    Legend
-);
+ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
 
 interface Transaction {
     id: string;
@@ -53,13 +35,11 @@ export default function TotalAnalytics() {
 
     const currentYear = new Date().getFullYear();
     
-    // Фильтруем транзакции только за текущий год
     const yearlyTransactions = transactions.filter(item => {
         const itemYear = new Date(item.date).getFullYear();
         return itemYear === currentYear;
     });
 
-    // Общие доходы и расходы за год (для карточек)
     const yearlyIncome = yearlyTransactions
         .filter(item => item.type === 'income')
         .reduce((sum, item) => sum + item.amount, 0);
@@ -70,13 +50,11 @@ export default function TotalAnalytics() {
 
     const yearlyBalance = yearlyIncome - yearlyExpense;
 
-    // --- ПОДГОТОВКА ДАННЫХ ДЛЯ ГРАФИКА ---
-    // Создаем два массива по 12 нулей (для каждого месяца)
     const monthlyIncomes = Array(12).fill(0);
     const monthlyExpenses = Array(12).fill(0);
 
     yearlyTransactions.forEach(item => {
-        const monthIndex = new Date(item.date).getMonth(); // Получаем 0 для Янв, 1 для Фев...
+        const monthIndex = new Date(item.date).getMonth();
         if (item.type === 'income') {
             monthlyIncomes[monthIndex] += item.amount;
         } else {
@@ -84,20 +62,19 @@ export default function TotalAnalytics() {
         }
     });
 
-    // Настройки данных для Chart.js
     const chartData = {
-        labels: months, // Оси Х (Янв, Фев...)
+        labels: months,
         datasets: [
             {
                 label: 'Доходы',
                 data: monthlyIncomes,
-                backgroundColor: '#F282B0', // Твой зеленый цвет
-                borderRadius: 6,           // Скругление столбиков
+                backgroundColor: '#F282B0',
+                borderRadius: 6,
             },
             {
                 label: 'Расходы',
                 data: monthlyExpenses,
-                backgroundColor: '#C53771', // Фирменный темно-розовый CashGlow
+                backgroundColor: '#C53771',
                 borderRadius: 6,
             }
         ]
@@ -110,7 +87,6 @@ export default function TotalAnalytics() {
             legend: {
                 position: 'top' as const,
                 labels: {
-                    // Настройка шрифта для легенды (Доходы / Расходы)
                     font: { 
                         family: 'Montserrat, sans-serif', 
                         size: 13,
@@ -120,7 +96,6 @@ export default function TotalAnalytics() {
                 }
             },
             tooltip: {
-                // Настройка шрифта внутри всплывающего окошка
                 titleFont: { family: 'Montserrat, sans-serif', size: 14 },
                 bodyFont: { family: 'Montserrat, sans-serif', size: 13 },
                 callbacks: {
@@ -153,16 +128,11 @@ export default function TotalAnalytics() {
         }
     };
 
-    // --- РЕЙТИНГ КАТЕГОРИЙ ---
     const categoryMap: { [key: string]: number } = {};
     yearlyTransactions
         .filter(item => item.type === 'expense')
         .forEach(item => {
-            if (categoryMap[item.category]) {
-                categoryMap[item.category] += item.amount;
-            } else {
-                categoryMap[item.category] = item.amount;
-            }
+            categoryMap[item.category] = (categoryMap[item.category] || 0) + item.amount;
         });
 
     const sortedCategories = Object.keys(categoryMap)
@@ -173,7 +143,6 @@ export default function TotalAnalytics() {
         <div className={styles.container}>
             <h1>Годовая аналитика ({currentYear})</h1>
 
-            {/* Твоя сетка карточек */}
             <div className={styles.grid}>
                 <div className={styles.card}>
                     <span className={styles.title}>Доходы за год:</span>
@@ -192,12 +161,11 @@ export default function TotalAnalytics() {
                 <div className={`${styles.card} ${yearlyBalance >= 0 ? styles.positiveCard : styles.negativeCard}`}>
                     <span className={styles.totalTitle}>Итог за год:</span>
                     <span className={styles.totalInfo}>
-                        {yearlyBalance >= 0 ? `+ ${yearlyBalance.toLocaleString('ru-RU')}` : `${yearlyBalance.toLocaleString('ru-RU')}`} руб
+                        {yearlyBalance >= 0 ? '+' : ''} {yearlyBalance.toLocaleString('ru-RU')} руб
                     </span>
                 </div>
             </div>
 
-            {/* НАШ НОВЫЙ БЛОК С ГРАФИКОМ */}
             <div className={styles.chartSection}>
                 <h2>Сравнение доходов и расходов</h2>
                 <div className={styles.chartContainer}>
@@ -205,21 +173,20 @@ export default function TotalAnalytics() {
                 </div>
             </div>
 
-            {/* Рейтинг категорий */}
             <div className={styles.categoriesSection}>
                 <h2>Траты по категориям</h2>
                 {sortedCategories.length === 0 ? (
                     <p className={styles.empty}>У вас пока нет расходов за этот год</p>
                 ) : (
                     <div className={styles.categoryList}>
-                        {sortedCategories.map((cat, index) => (
-                            <div key={cat.name} className={styles.categoryRow}>
+                        {sortedCategories.map((category, index) => (
+                            <div key={category.name} className={styles.categoryRow}>
                                 <div className={styles.categoryInfo}>
                                     <span className={styles.place}>{index + 1}.</span>
-                                    <span className={styles.name}>{cat.name}</span>
+                                    <span className={styles.name}>{category.name}</span>
                                 </div>
                                 <span className={styles.amount}>
-                                    {cat.amount.toLocaleString('ru-RU')} руб
+                                    {category.amount.toLocaleString('ru-RU')} руб
                                 </span>
                             </div>
                         ))}
