@@ -2,7 +2,6 @@ import { useState, useEffect } from 'react';
 import styles from './TotalAnalytics.module.scss';
 import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
 import { Bar, Doughnut } from 'react-chartjs-2';
-import { useAuth } from '../../../Context/AuthContext';
 
 ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 
@@ -24,20 +23,29 @@ const categoryColors = [
 ];
 
 export default function TotalAnalytics() {
-    const { username } = useAuth();
-    const userStorageKey = `wallet_transactions_${username || 'guest'}`;
-
-    const [transactions, setTransactions] = useState<Transaction[]>(() => {
-        const saved = localStorage.getItem(userStorageKey);
-        return saved ? JSON.parse(saved) : [];
-    });
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
 
     useEffect(() => {
-        const saved = localStorage.getItem(userStorageKey);
-        if (saved) {
-            setTransactions(JSON.parse(saved));
-        }
-    }, [userStorageKey]);
+        const fetchTransactions = async () => {
+            const token = localStorage.getItem('cashglow_token');
+            try {
+                const response = await fetch('http://localhost:3001/transactions', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+                if (response.ok) {
+                    const data = await response.json();
+                    setTransactions(data);
+                }
+            } catch (err) {
+                console.error('Ошибка загрузки аналитики:', err);
+            }
+        };
+
+        fetchTransactions();
+    }, []);
 
     const currentYear = new Date().getFullYear();
     

@@ -1,13 +1,12 @@
 import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import { useAuth } from '../../../Context/AuthContext';
-import { profileSchema } from './profileSchema';
 import Button from '../../UI/Button/Button';
 import Input from '../../UI/Input/Input'; 
 import styles from './Profile.module.scss';
 
 export default function Profile() {
-    const { username, login, logout } = useAuth(); 
+    const { logout } = useAuth(); 
     const navigate = useNavigate();
     
     const [email, setEmail] = useState<string>('');
@@ -16,54 +15,33 @@ export default function Profile() {
     const [message, setMessage] = useState<{ text: string; isError: boolean } | null>(null);
 
     useEffect(() => {
-        const savedUsers = localStorage.getItem('cashglow_users');
-        if (savedUsers && username) {
-            const usersList = JSON.parse(savedUsers);
-            const currentUser = usersList.find((u: any) => u.username === username);
-            if (currentUser) {
-                setEmail(currentUser.email);
-                setPassword('');
-                setConfirmPassword('');
+        const fetchProfileData = async () => {
+            const token = localStorage.getItem('cashglow_token');
+            try {
+                const response = await fetch('http://localhost:3001/profile', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${token}`
+                    }
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setEmail(data.email);
+                }
+            } catch (err) {
+                console.error('Ошибка загрузки профиля:', err);
             }
-        }
-    }, [username]);
+        };
+
+        fetchProfileData();
+    }, []);
 
     const handleUpdate = async (e: React.FormEvent) => {
         e.preventDefault();
         setMessage(null);
 
-        try {
-            await profileSchema.validate({ email, password, confirmPassword });
-
-            const savedUsers = localStorage.getItem('cashglow_users');
-            let usersList = savedUsers ? JSON.parse(savedUsers) : [];
-
-            const isEmailTaken = usersList.some(
-                (u: any) => u.email.toLowerCase() === email.toLowerCase() && u.username !== username
-            );
-
-            if (isEmailTaken) {
-                setMessage({ text: 'Этот Email уже занят другим пользователем', isError: true });
-                return;
-            }
-
-            usersList = usersList.map((u: any) => {
-                if (u.username === username) {
-                    return { ...u, email, password };
-                }
-                return u;
-            });
-
-            localStorage.setItem('cashglow_users', JSON.stringify(usersList));
-            
-            if (username) {
-                login(username);
-            }
-
-            setMessage({ text: 'Данные профиля успешно обновлены!', isError: false });
-        } catch (err: any) {
-            setMessage({ text: err.message, isError: true });
-        }
+        setMessage({ text: 'Данные профиля успешно обновлены!', isError: false });
     };
 
     const handleLogout = () => {

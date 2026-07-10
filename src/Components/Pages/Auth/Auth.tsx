@@ -29,40 +29,31 @@ export default function Auth() {
                 { abortEarly: false, context: { isLogin } }
             );
 
-            const savedUsers = localStorage.getItem('cashglow_users');
-            const usersList = savedUsers ? JSON.parse(savedUsers) : [];
+            const url = isLogin 
+                ? 'http://localhost:3001/login' 
+                : 'http://localhost:3001/register';
 
-            if (isLogin) {
-                const foundUser = usersList.find(
-                    (u: any) => u.email.toLowerCase() === email.toLowerCase() && u.password === password
-                );
+            const response = await fetch(url, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ email, password })
+            });
 
-                if (!foundUser) {
-                    setGeneralError('Неверный Email или Пароль, либо аккаунт не существует');
-                    return;
-                }
+            const data = await response.json();
 
-                const generatedName = foundUser.username || email.split('@')[0];
-                login(generatedName);
-                navigate('/dashboard');
-            } else {
-                const isEmailTaken = usersList.some(
-                    (u: any) => u.email.toLowerCase() === email.toLowerCase()
-                );
-
-                if (isEmailTaken) {
-                    setErrors(prev => ({ ...prev, email: 'Пользователь с таким Email уже зарегистрирован' }));
-                    return;
-                }
-
-                const username = email.split('@')[0];
-                const newUser = { username, email, password };
-                usersList.push(newUser);
-                localStorage.setItem('cashglow_users', JSON.stringify(usersList));
-
-                login(username);
-                navigate('/dashboard');
+            if (!response.ok) {
+                setGeneralError(data.message || 'Произошла ошибка при авторизации');
+                return;
             }
+
+            localStorage.setItem('cashglow_token', data.token);
+            
+            login(data.username);
+            
+            navigate('/dashboard');
+
         } catch (err: any) {
             if (err.inner) {
                 const validationErrors: Record<string, string> = {};
@@ -73,7 +64,7 @@ export default function Auth() {
                 });
                 setErrors(validationErrors);
             } else {
-                setGeneralError(err.message);
+                setGeneralError(err.message || 'Что-то пошло не так');
             }
         }
     };
@@ -101,7 +92,9 @@ export default function Auth() {
                             value={email}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setEmail(e.target.value)}
                         />
-                        {errors.email && <span className={styles.errorText}>{errors.email}</span>}
+                        <div className={styles.errorContainer}>
+                            {errors.email && <span className={styles.errorText}>{errors.email}</span>}
+                        </div>
                     </div>
                     
                     <div className={styles.fieldWrapper}>
@@ -112,7 +105,9 @@ export default function Auth() {
                             value={password}
                             onChange={(e: React.ChangeEvent<HTMLInputElement>) => setPassword(e.target.value)}
                         />
-                        {errors.password && <span className={styles.errorText}>{errors.password}</span>}
+                        <div className={styles.errorContainer}>
+                            {errors.password && <span className={styles.errorText}>{errors.password}</span>}
+                        </div>
                     </div>
 
                     {!isLogin && (
@@ -124,7 +119,9 @@ export default function Auth() {
                                 value={confirmPassword}
                                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setConfirmPassword(e.target.value)}
                             />
-                            {errors.confirmPassword && <span className={styles.errorText}>{errors.confirmPassword}</span>}
+                            <div className={styles.errorContainer}>
+                                {errors.confirmPassword && <span className={styles.errorText}>{errors.confirmPassword}</span>}
+                            </div>
                         </div>
                     )}
 

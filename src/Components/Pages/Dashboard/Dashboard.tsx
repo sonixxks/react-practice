@@ -4,7 +4,6 @@ import MonthSelector from '../../Widgets/MonthSelector/MonthSelector';
 import Analytics from '../../Widgets/Analytics/Analytics';
 import TransactionTable from '../../Widgets/TransactionTable/TransactionTable';
 import TransactionForm from '../../Widgets/TransactionForm/TransactionForm';
-import { useAuth } from '../../../Context/AuthContext';
 
 interface Transaction {
     id: string;
@@ -18,31 +17,48 @@ interface Transaction {
 const months = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
 
 export default function Dashboard() {
-    const { username } = useAuth(); 
-    
     const currentMonth = months[new Date().getMonth()];
     const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth);
+    const [transactions, setTransactions] = useState<Transaction[]>([]);
+    const [loadingError, setLoadingError] = useState<string>('');
 
-    const userStorageKey = `wallet_transactions_${username || 'guest'}`;
+    // Функция получения транзакций с нативного сервера (порт 3001)
+    const fetchTransactions = async () => {
+        const token = localStorage.getItem('cashglow_token');
+        try {
+            const response = await fetch('http://localhost:3001/transactions', {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                }
+            });
 
-    const [transactions, setTransactions] = useState<Transaction[]>(() => {
-        const saved = localStorage.getItem(userStorageKey);
-        return saved ? JSON.parse(saved) : [];
-    });
+            if (!response.ok) {
+                throw new Error('Не удалось загрузить транзакции');
+            }
 
+            const data = await response.json();
+            setTransactions(data);
+        } catch (err: any) {
+            setLoadingError(err.message || 'Ошибка сети');
+        }
+    };
+
+    // Загружаем операции один раз при монтировании компонента
     useEffect(() => {
-        localStorage.setItem(userStorageKey, JSON.stringify(transactions));
-    }, [transactions, userStorageKey]);
+        fetchTransactions();
+    }, []);
 
-    const handleAddTransaction = (data: {
+    // Отправка новой операции на бэкенд
+    const handleAddTransaction = async (data: {
         type: 'income' | 'expense';
         date: string;
         category: string;
         title: string;
         amount: string;
     }) => {
-        const newTransaction: Transaction = {
-            id: Date.now().toString(),
+        const token = localStorage.getItem('cashglow_token');
+        const newTransaction = {
             type: data.type,
             date: data.date,
             category: data.category,
@@ -50,7 +66,23 @@ export default function Dashboard() {
             amount: Number(data.amount)
         };
 
-        setTransactions(prev => [newTransaction, ...prev]);
+        try {
+            const response = await fetch('http://localhost:3001/transactions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(newTransaction)
+            });
+
+            if (response.ok) {
+                // Если сервер успешно сохранил в db.json, обновляем стейт на фронте
+                fetchTransactions();
+            }
+        } catch (err) {
+            console.error('Ошибка добавления транзакции:', err);
+        }
     };
 
     const filteredTransactions = transactions
@@ -82,6 +114,8 @@ export default function Dashboard() {
                 selected={selectedMonth} 
                 onChange={setSelectedMonth} 
             />
+
+            {loadingError && <p className={styles.formError}>{loadingError}</p>}
 
             <div className={styles.main}>
                 <section className={styles.form}>
