@@ -4,7 +4,7 @@ const http = require("http");
 const url = require("url");
 const path = require("path");
 
-const SECRET_KEY = "cashglow-super-secret-key-12345";
+const SECRET_KEY = process.env.JWT_SECRET || "cashglow-super-secret-key-12345";
 
 const DB_PATH = path.join(__dirname, "..", "src", "Data", "db.json");
 
