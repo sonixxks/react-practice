@@ -10,7 +10,7 @@
 
 1. Клонируйте репозиторий с проектом и перейдите в рабочую директорию:
    ```bash
-   git clone <https://github.com/sonixxks/react-practice.git>
+   git clone https://github.com/sonixxks/react-practice.git
    cd react-practice
 2. Установите все зависимости проекта:
    ```bash
