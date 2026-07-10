@@ -29,7 +29,7 @@ src/
 ├── App/               # Корневой компонент приложения (App.tsx, App.module.scss)
 ├── Assets/            # Оптимизированные изображения
 ├── Components/        # Компоненты приложения
-│   ├── Pages/         # Страницы приложения (Home, Auth (вход и регистрация), Dashboard, TotalAnalytics)
+│   ├── Pages/         # Страницы приложения (Home, Auth (вход и регистрация), Dashboard, TotalAnalytics, Profile)
 │   ├── UI/            # UI-компоненты (Button, Input, Select, Radio, Card)
 │   └── Widgets/       # Сложные логические блоки (TransactionForm, TransactionTable, MonthSelector, Analytics)
 ├── Context/           # Глобальное управление состоянием и защита роутов

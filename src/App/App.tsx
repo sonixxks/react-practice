@@ -1,10 +1,12 @@
 import { Routes, Route, Link, NavLink, Navigate } from 'react-router-dom';
+import styles from './App.module.scss';
+import { ProtectedRoute, useAuth } from '../Context/AuthContext';
 import Home from '../Components/Pages/Home/Home';
 import Auth from '../Components/Pages/Auth/Auth';
 import Dashboard from '../Components/Pages/Dashboard/Dashboard';
 import TotalAnalytics from '../Components/Pages/TotalAnalytics/TotalAnalytics';
-import styles from './App.module.scss';
-import { useAuth, ProtectedRoute } from '../Context/AuthContext'; // Забираем ProtectedRoute отсюда
+import Profile from '../Components/Pages/Profile/Profile';
+
 
 export default function App() {
     const { isLogged } = useAuth();
@@ -16,23 +18,54 @@ export default function App() {
                     <h1>CashGlow</h1>
                 </Link>
                 <nav className={styles.nav}>
-                    <NavLink to="/" className={({ isActive }) => `${styles.navButton} ${isActive ? styles.activeNav : ''}`}>
+                    <NavLink 
+                        to="/" 
+                        className={({ isActive }) => 
+                            `${styles.navButton} ${isActive ? styles.activeNav : ''}`
+                        }
+                    >
                         Главная
                     </NavLink>
                     
                     {!isLogged ? (
-                        <NavLink to="/auth" className={({ isActive }) => `${styles.navButton} ${isActive ? styles.activeNav : ''}`}>
+                        <NavLink 
+                            to="/auth" 
+                            className={({ isActive }) => 
+                                `${styles.navButton} ${isActive ? styles.activeNav : ''}`
+                            }
+                        >
                             Вход
                         </NavLink>
                     ) : (
-                        <NavLink to="/dashboard" className={({ isActive }) => `${styles.navButton} ${isActive ? styles.activeNav : ''}`}>
-                            Личный кабинет
+                        <NavLink 
+                            to="/dashboard" 
+                            className={({ isActive }) => 
+                                `${styles.navButton} ${isActive ? styles.activeNav : ''}`
+                            }
+                        >
+                            Финансовый трекер
                         </NavLink>
                     )}
 
                     {isLogged && (
-                        <NavLink to="/analytics" className={({ isActive }) => `${styles.navButton} ${isActive ? styles.activeNav : ''}`}>
+                        <NavLink 
+                            to="/analytics" 
+                            className={({ isActive }) => 
+                                `${styles.navButton} ${isActive ? styles.activeNav : ''}`
+                            }
+                        >
                             Аналитика
+                        </NavLink>
+                    )}
+
+                    {isLogged && (
+                        <NavLink 
+                            to="/profile" 
+                            className={({ isActive }) => 
+                                `${styles.navButton} ${isActive ? styles.activeNav : ''}`
+                            }
+                        >
+                            Профиль
                         </NavLink>
                     )}
                 </nav>
@@ -53,6 +86,11 @@ export default function App() {
                             <TotalAnalytics />
                         </ProtectedRoute>
                     } />
+                    <Route path="/profile" element={
+                        <ProtectedRoute>
+                            <Profile />
+                        </ProtectedRoute>
+                    } />
 
                     <Route path="*" element={<Navigate to="/" replace />} />
                 </Routes>
@@ -63,7 +101,9 @@ export default function App() {
                 <div className={styles.footerLinks}>
                     <span>Политика конфиденциальности</span>
                     <span>Условия использования</span>
-                    <a href="https://github.com/sonixxks" target="_blank" rel="noreferrer" className={styles.githubLink}>GitHub</a>
+                    <a href="https://github.com/sonixxks" target="_blank" rel="noreferrer" className={styles.githubLink}>
+                        GitHub
+                    </a>
                 </div>
             </footer>
         </div>

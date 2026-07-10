@@ -1,10 +1,10 @@
 import { useState, useEffect } from 'react';
 import styles from './TotalAnalytics.module.scss';
-import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend } from 'chart.js';
-import { Bar } from 'react-chartjs-2';
+import { Chart as ChartJS, CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend } from 'chart.js';
+import { Bar, Doughnut } from 'react-chartjs-2';
 import { useAuth } from '../../../Context/AuthContext';
 
-ChartJS.register(CategoryScale, LinearScale, BarElement, Title, Tooltip, Legend);
+ChartJS.register(CategoryScale, LinearScale, BarElement, ArcElement, Title, Tooltip, Legend);
 
 interface Transaction {
     id: string;
@@ -16,6 +16,12 @@ interface Transaction {
 }
 
 const months = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
+
+const categoryColors = [
+    '#C53771', '#F282B0', '#7a465a', '#9b59b6', 
+    '#e74c3c', '#e67e22', '#f1c40f', '#1abc9c', 
+    '#2ecc71', '#3498db', '#34495e', '#95a5a6'
+];
 
 export default function TotalAnalytics() {
     const { username } = useAuth();
@@ -49,6 +55,9 @@ export default function TotalAnalytics() {
         .reduce((sum, item) => sum + item.amount, 0);
 
     const yearlyBalance = yearlyIncome - yearlyExpense;
+
+    const isZero = yearlyBalance === 0;
+    const isPositive = yearlyBalance > 0;
 
     const monthlyIncomes = Array(12).fill(0);
     const monthlyExpenses = Array(12).fill(0);
@@ -87,11 +96,7 @@ export default function TotalAnalytics() {
             legend: {
                 position: 'top' as const,
                 labels: {
-                    font: { 
-                        family: 'Montserrat, sans-serif', 
-                        size: 13,
-                        weight: 500
-                    },
+                    font: { family: 'Montserrat, sans-serif', size: 13, weight: 500 },
                     color: '#333'
                 }
             },
@@ -107,13 +112,8 @@ export default function TotalAnalytics() {
         },
         scales: {
             x: {
-                ticks: {
-                    font: { family: 'Montserrat, sans-serif', size: 12 },
-                    color: '#666'
-                },
-                grid: {
-                    display: false
-                }
+                ticks: { font: { family: 'Montserrat, sans-serif', size: 12 }, color: '#666' },
+                grid: { display: false }
             },
             y: {
                 beginAtZero: true,
@@ -139,6 +139,40 @@ export default function TotalAnalytics() {
         .map(name => ({ name, amount: categoryMap[name] }))
         .sort((a, b) => b.amount - a.amount);
 
+    const categoryChartData = {
+        labels: sortedCategories.map(c => c.name),
+        datasets: [
+            {
+                data: sortedCategories.map(c => c.amount),
+                backgroundColor: categoryColors.slice(0, sortedCategories.length),
+                borderWidth: 1,
+            }
+        ]
+    };
+
+    const categoryChartOptions = {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+            legend: {
+                display: false 
+            },
+            tooltip: {
+                callbacks: {
+                    label: function(context: any) {
+                        const value = context.raw;
+                        const percentage = ((value / yearlyExpense) * 100).toFixed(1);
+                        return ` ${context.label}: ${value.toLocaleString('ru-RU')} руб (${percentage}%)`;
+                    }
+                }
+            }
+        }
+    };
+
+    const totalCardClass = isZero 
+        ? styles.card 
+        : (isPositive ? `${styles.card} ${styles.positiveCard}` : `${styles.card} ${styles.negativeCard}`);
+
     return (
         <div className={styles.container}>
             <h1>Годовая аналитика ({currentYear})</h1>
@@ -147,21 +181,21 @@ export default function TotalAnalytics() {
                 <div className={styles.card}>
                     <span className={styles.title}>Доходы за год:</span>
                     <span className={styles.info}>
-                        + {yearlyIncome.toLocaleString('ru-RU')} руб
+                        {yearlyIncome.toLocaleString('ru-RU')} руб
                     </span>
                 </div>
                 
                 <div className={styles.card}>
                     <span className={styles.title}>Расходы за год:</span>
                     <span className={styles.info}>
-                        - {yearlyExpense.toLocaleString('ru-RU')} руб
+                        {yearlyExpense.toLocaleString('ru-RU')} руб
                     </span>
                 </div>
                 
-                <div className={`${styles.card} ${yearlyBalance >= 0 ? styles.positiveCard : styles.negativeCard}`}>
+                <div className={totalCardClass}>
                     <span className={styles.totalTitle}>Итог за год:</span>
                     <span className={styles.totalInfo}>
-                        {yearlyBalance >= 0 ? '+' : ''} {yearlyBalance.toLocaleString('ru-RU')} руб
+                        {isZero ? '0 руб' : (isPositive ? `+ ${yearlyBalance.toLocaleString('ru-RU')} руб` : `${yearlyBalance.toLocaleString('ru-RU')} руб`)}
                     </span>
                 </div>
             </div>
@@ -174,22 +208,33 @@ export default function TotalAnalytics() {
             </div>
 
             <div className={styles.categoriesSection}>
-                <h2>Траты по категориям</h2>
+                <h2>Расходы по категориям</h2>
                 {sortedCategories.length === 0 ? (
                     <p className={styles.empty}>У вас пока нет расходов за этот год</p>
                 ) : (
-                    <div className={styles.categoryList}>
-                        {sortedCategories.map((category, index) => (
-                            <div key={category.name} className={styles.categoryRow}>
-                                <div className={styles.categoryInfo}>
-                                    <span className={styles.place}>{index + 1}.</span>
-                                    <span className={styles.name}>{category.name}</span>
-                                </div>
-                                <span className={styles.amount}>
-                                    {category.amount.toLocaleString('ru-RU')} руб
-                                </span>
-                            </div>
-                        ))}
+                    <div className={styles.categoriesContent}>
+                        <div className={styles.doughnutContainer}>
+                            <Doughnut data={categoryChartData} options={categoryChartOptions} />
+                        </div>
+                        
+                        <div className={styles.categoryList}>
+                            {sortedCategories.map((category, index) => {
+                                return (
+                                    <div key={category.name} className={styles.categoryRow}>
+                                        <div className={styles.categoryInfo}>
+                                            <span 
+                                                className={styles.colorMarker} 
+                                                style={{ backgroundColor: categoryColors[index] }}
+                                            />
+                                            <span className={styles.name}>{category.name}</span>
+                                        </div>
+                                        <span className={styles.amount}>
+                                            {category.amount.toLocaleString('ru-RU')} руб
+                                        </span>
+                                    </div>
+                                );
+                            })}
+                        </div>
                     </div>
                 )}
             </div>

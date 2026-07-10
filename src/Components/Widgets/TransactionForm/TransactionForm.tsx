@@ -4,6 +4,7 @@ import Input from "../../UI/Input/Input";
 import Radio from "../../UI/Radio/Radio";
 import Select from "../../UI/Select/Select";
 import styles from './TransactionForm.module.scss';
+import { transactionSchema } from './transactionSchema';
 
 interface TransactionData {
     type: 'income' | 'expense';
@@ -41,21 +42,43 @@ export default function TransactionForm({ onAdd }: TransactionFormProps) {
     const [category, setCategory] = useState('');
     const [title, setTitle] = useState('');
     const [amount, setAmount] = useState('');
+    
+    const [errors, setErrors] = useState<Record<string, string>>({});
 
     const currentCategories = type === 'income' ? incomeCategories : expenseCategories;
 
     const handleTypeChange = (newType: 'income' | 'expense') => {
         setType(newType);
         setCategory(''); 
+        setErrors({});
     };
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        onAdd({ type, date, category, title, amount });
-        setDate('');
-        setCategory('');
-        setTitle('');
-        setAmount('');
+        setErrors({});
+
+        try {
+            await transactionSchema.validate(
+                { date, category, title, amount }, 
+                { abortEarly: false }
+            );
+
+            onAdd({ type, date, category, title, amount });
+            setDate('');
+            setCategory('');
+            setTitle('');
+            setAmount('');
+        } catch (err: any) {
+            if (err.inner) {
+                const validationErrors: Record<string, string> = {};
+                err.inner.forEach((error: any) => {
+                    if (error.path) {
+                        validationErrors[error.path] = error.message;
+                    }
+                });
+                setErrors(validationErrors);
+            }
+        }
     };
 
     return (
@@ -69,35 +92,47 @@ export default function TransactionForm({ onAdd }: TransactionFormProps) {
                 onChange={(e) => handleTypeChange(e.target.value as 'income' | 'expense')}
             />
 
-            <Input 
-                label="Дата" 
-                type="date" 
-                value={date}
-                onChange={(e) => setDate(e.target.value)}
-            />
+            <div className={styles.fieldWrapper}>
+                <Input 
+                    label="Дата" 
+                    type="date" 
+                    value={date}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setDate(e.target.value)}
+                />
+                {errors.date && <span className={styles.errorText}>{errors.date}</span>}
+            </div>
             
-            <Select 
-                label="Категория" 
-                options={currentCategories.map(category => ({ value: category, label: category }))}
-                value={category}
-                onChange={(e) => setCategory(e.target.value)}
-            />
+            <div className={styles.fieldWrapper}>
+                <Select 
+                    label="Категория" 
+                    options={currentCategories.map(cat => ({ value: cat, label: cat }))}
+                    value={category}
+                    onChange={(e) => setCategory(e.target.value)}
+                />
+                {errors.category && <span className={styles.errorText}>{errors.category}</span>}
+            </div>
             
-            <Input 
-                label="Название / описание" 
-                type="text" 
-                placeholder="Например, маникюр" 
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-            />
+            <div className={styles.fieldWrapper}>
+                <Input 
+                    label="Название / описание" 
+                    type="text" 
+                    placeholder="Например, маникюр" 
+                    value={title}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setTitle(e.target.value)}
+                />
+                {errors.title && <span className={styles.errorText}>{errors.title}</span>}
+            </div>
             
-            <Input 
-                label="Сумма, руб" 
-                type="number" 
-                placeholder="Введите сумму в рублях" 
-                value={amount}
-                onChange={(e) => setAmount(e.target.value)}
-            />
+            <div className={styles.fieldWrapper}>
+                <Input 
+                    label="Сумма, руб" 
+                    type="number" 
+                    placeholder="Введите сумму в рублях" 
+                    value={amount}
+                    onChange={(e: React.ChangeEvent<HTMLInputElement>) => setAmount(e.target.value)}
+                />
+                {errors.amount && <span className={styles.errorText}>{errors.amount}</span>}
+            </div>
             
             <Button text="Добавить" type="submit" />
         </form>

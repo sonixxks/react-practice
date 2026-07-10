@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
 import styles from './Dashboard.module.scss';
-import Button from '../../UI/Button/Button';
 import MonthSelector from '../../Widgets/MonthSelector/MonthSelector';
 import Analytics from '../../Widgets/Analytics/Analytics';
 import TransactionTable from '../../Widgets/TransactionTable/TransactionTable';
@@ -19,7 +18,7 @@ interface Transaction {
 const months = ['Янв', 'Фев', 'Мар', 'Апр', 'Май', 'Июн', 'Июл', 'Авг', 'Сен', 'Окт', 'Ноя', 'Дек'];
 
 export default function Dashboard() {
-    const { username, logout } = useAuth(); 
+    const { username } = useAuth(); 
     
     const currentMonth = months[new Date().getMonth()];
     const [selectedMonth, setSelectedMonth] = useState<string>(currentMonth);
@@ -54,11 +53,16 @@ export default function Dashboard() {
         setTransactions(prev => [newTransaction, ...prev]);
     };
 
-    const filteredTransactions = transactions.filter(item => {
-        const itemMonthIndex = new Date(item.date).getMonth();
-        const itemMonthName = months[itemMonthIndex];
-        return itemMonthName === selectedMonth;
-    });
+    const filteredTransactions = transactions
+        .filter(item => {
+            const itemDate = new Date(item.date);
+            const itemMonthName = months[itemDate.getMonth()];
+            const itemYear = itemDate.getFullYear();
+            const currentYear = new Date().getFullYear();
+
+            return itemMonthName === selectedMonth && itemYear === currentYear;
+        })
+        .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
 
     const totalIncome = filteredTransactions
         .filter(item => item.type === 'income')
@@ -92,10 +96,6 @@ export default function Dashboard() {
                     />
                     <TransactionTable items={filteredTransactions} />
                 </section>
-            </div>
-
-            <div className={styles.exit}>
-                <Button text="Выйти из аккаунта" onClick={logout} />
             </div>
         </div>
     );

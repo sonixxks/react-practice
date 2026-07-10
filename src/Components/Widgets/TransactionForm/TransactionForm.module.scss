@@ -11,3 +11,19 @@
     color: #C53771;
     text-align: center;
 }
+
+.fieldWrapper {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+.errorText {
+    color: #e74c3c; 
+    font-size: 12px;
+    font-weight: 500;
+    margin-top: -15px;
+    margin-bottom: 10px;
+    padding-left: 5px;
+    text-align: left;
+}
